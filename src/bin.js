@@ -1,8 +1,18 @@
-#!/usr/bin/env -S XDG_DATA_DIRS=${XDG_DATA_DIRS}:/run/host/usr/share:/var/lib/snapd/desktop:/var/lib/flatpak/exports/share:${HOME}/.local/share/flatpak/exports/share gjs -m
+#!/usr/bin/env -S gjs -m
 
 import { exit, programArgs, programInvocationName } from "system";
 import GLib from "gi://GLib";
 import { setConsoleLogDomain } from "console";
+
+const currentPath = GLib.getenv('XDG_DATA_DIRS') || '';
+const newPaths = [
+  '/run/host/usr/share',
+  '/var/lib/snapd/desktop',
+  '/var/lib/flatpak/exports/share',
+  `${GLib.getenv('HOME')}/.local/share/flatpak/exports/share`
+];
+
+GLib.setenv('XDG_DATA_DIRS', `${currentPath}:${newPaths.join(':')}`, true);
 
 imports.package.init({
   name: "@app_id@",
